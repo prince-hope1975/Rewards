@@ -1,36 +1,37 @@
 import Head from "next/head";
-import Image from "next/image";
 import styles from "../styles/Home.module.css";
+import Footer from "../components/footer";
+import Rewards from "../components/RewardsComponent.tsx"
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useGlobalContext } from "../components/context";
 import Header from "../components/header";
 import { useRouter } from "next/router";
+import defaultRewardArray from "../components/defaultRewardArray";
 
 export default function Home() {
   const { propsObj, setPropsObj, setAddress, address } = useGlobalContext();
   const router = useRouter();
 
   useEffect(() => {
-    let storage = window.localStorage.getItem("proposals");
+    let storage = localStorage.getItem("rewardsList");
     if (!storage) {
-      localStorage.setItem("proposals", JSON.stringify(Obj));
-      storage = localStorage.getItem("proposals");
+      localStorage.setItem("rewardsList", JSON.stringify(defaultRewardArray));
+      storage = localStorage.getItem("rewardsList");
     }
-
     setPropsObj(JSON.parse(storage));
   }, []);
-  const handleDelete = (param) => {
-    const filteredArray = propsObj?.filter((_, index) => {
-      return index !== param;
-    });
-    const answer = confirm("Are you sure you want to delete this Proposal?");
-    if (answer) {
-      setPropsObj(filteredArray);
-      localStorage.setItem("proposals", JSON.stringify(filteredArray));
-      alert("Proposal Deleted Successfully");
-    }
-  };
+  // const handleDelete = (param) => {
+  //   const filteredArray = propsObj?.filter((_, index) => {
+  //     return index !== param;
+  //   });
+  //   const answer = confirm("Are you sure you want to delete this Proposal?");
+  //   if (answer) {
+  //     setPropsObj(filteredArray);
+  //     localStorage.setItem("proposals", JSON.stringify(filteredArray));
+  //     alert("Proposal Deleted Successfully");
+  //   }
+  // };
 
   return (
     <div className={styles.container}>
@@ -51,9 +52,8 @@ export default function Home() {
           A way to reward Outstanding members of the DAO
         </h2>
         <p className={styles.description}>
-          
           Fill in info
-          <Link href={"/new/reward"}>
+          <Link href={"/new/reward"} >
             <a
               className={`${styles.code} block rounded mt text-gray-900 bg-gray-100 border-2 hover:text-blue-500 hover:bg-white hover:border-blue-500`}
             >
@@ -62,24 +62,8 @@ export default function Home() {
           </Link>
         </p>
       </main>
-      <section className={`m-0 p-0 bg-blue-400 pt-6`}>
-        <div className="text-3xl text-white my-3 text-center">PROPOSALS</div>
-        <div className={`bg-blue-400 m-0 p-0 ${styles.grid}`}></div>
-      </section>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
+      <Rewards/>
+      <Footer />
     </div>
   );
 }
-

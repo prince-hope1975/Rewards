@@ -46,7 +46,6 @@ export default function Proposals() {
 
   const [addressArray, setAddressArray] = useState([]);
   const [amount, setAmount] = useState(0);
-  const [isTableVisible, setIsTableVisible] = useState(false);
   const [tablecontent, setTablecontent] = useState(null);
 
   const processPaymentTransaction = async (

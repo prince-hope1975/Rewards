@@ -9,6 +9,7 @@ export default function Proposals() {
   const router = useRouter();
   const {
     setPropsObj,
+    propsObj,
     walletAddress,
     setWalletAddress,
     name,
@@ -29,9 +30,20 @@ export default function Proposals() {
     }
     setPropsObj(JSON.parse(storage));
   }, []);
+  useEffect(()=>{
+    if(propsObj){
+      localStorage.setItem("rewardsList",JSON.stringify(propsObj))
+    }
+    console.log(propsObj)
+  },[propsObj])
+
+  const updateStorage = (_value) =>{
+    setPropsObj([_value,...propsObj])
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log({name,discordID,githubURL,twitterHandle, walletAddress})
+    updateStorage({name,discordID,githubURL,twitterHandle, walletAddress})
     router.push("/")
   };
 
@@ -45,7 +57,7 @@ export default function Proposals() {
       <Header />
 
       <section className={`pt-4  text-gray-900`}>
-        <div className="flex justify-evenly text-3xl mb-4 uppercase w-full text-center">
+        <div className="mt-6 flex justify-evenly text-3xl mb-4 uppercase w-full text-center">
           Reward Active Participants
         </div>
         <form
