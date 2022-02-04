@@ -1,36 +1,37 @@
 import Head from "next/head";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import algosdk from "algosdk"
+import algosdk from "algosdk";
 
 import { useGlobalContext } from "../components/context";
 import Header from "../components/header";
 import defaultRewardArray from "../components/defaultRewardArray";
-import { useState } from "react/cjs/react.production.min";
 
 // Variables needed to connect to the algorand testnet
 const baseServer = "https://testnet-algorand.api.purestake.io/ps2";
 const port = "";
 const token = {
-  "X-API-key": process.env.PURESTAKE_API_KEY,
+  "X-API-key": process.env.NEXT_PUBLIC_PURESTAKE_API_KEY,
 };
 
 // Take the above variables and make a connection to Algorand testnet
-// using the algosdk 
+// using the algosdk
 let algodClient = new algosdk.Algodv2(token, baseServer, port);
-
-// Get account mnemonic using the seed phrase
-const recoveredAccount = algosdk.mnemonicToSecretKey(process.env.SEED_PHRASE);
-
 
 export default function Proposals() {
   const router = useRouter();
 
-  // import the variables fromt he global context file 
+  // Get account mnemonic using the seed phrase
+  const recoveredAccount = algosdk.mnemonicToSecretKey(
+    process.env.NEXT_PUBLIC_SEED_PHRASE
+  );
+
+  // import the variables fromt he global context file
   // Located at /components/context.js
   const {
     setPropsObj,
+    propsObj,
     walletAddress,
     setWalletAddress,
     name,
@@ -43,38 +44,42 @@ export default function Proposals() {
     setTwitterHandle,
   } = useGlobalContext();
 
-const [addressArray, setAddressArray]= useState([])
-const [amount, setAmount] = useState(0)
+  const [addressArray, setAddressArray] = useState([]);
+  const [amount, setAmount] = useState(0);
+  const [isTableVisible, setIsTableVisible] = useState(false);
+  const [tablecontent, setTablecontent] = useState(null);
 
-  const processPaymentTransaction = async (_address:string) =>{
-try{
- let params = await algodClient.getTransactionParams().do();
+  const processPaymentTransaction = async (
+    _address: string,
+    _amount: number = 1
+  ) => {
+    try {
+      let params = await algodClient.getTransactionParams().do();
 
- let amount = Math.floor(Math.random() * 1000);
- var mnemonic =
-   "code thrive mouse code badge example pride stereo sell viable adjust planet text close erupt embrace nature upon february weekend humble surprise shrug absorb faint";
+      let amount = Math.floor(_amount * 1000);
 
- let txn = {
-   from: recoveredAccount.addr,
-   to: "UUOB7ZC2IEE4A7JO4WY4TXKXWDFNATM43TL73IZRAFIFFOE6ORPKC7Q62E",
-   fee: 1,
-   amount: amount,
-   firstRound: params.firstRound,
-   lastRound: params.lastRound,
-   genesisID: params.genesisID,
-   genesisHash: params.genesisHash,
-   note: new Uint8Array(0),
- };
+      let txn = {
+        from: recoveredAccount.addr,
+        to: _address,
+        fee: 1,
+        amount: amount,
+        firstRound: params.firstRound,
+        lastRound: params.lastRound,
+        genesisID: params.genesisID,
+        genesisHash: params.genesisHash,
+        note: new Uint8Array(0),
+      };
 
- let signedTxn = algosdk.signTransaction(txn, recoveredAccount.sk);
- let sendTx = await algodClient.sendRawTransaction(signedTxn.blob).do();
+      let signedTxn = algosdk.signTransaction(txn, recoveredAccount.sk);
+      let sendTx = await algodClient.sendRawTransaction(signedTxn.blob).do();
 
- console.log("Transaction : " + sendTx.txId);
-}
-catch(err){
-  console.log("Failed to process transaction: ", err)
-}
-  }
+      console.log("Transaction : " + sendTx.txId);
+      return true;
+    } catch (err) {
+      console.log("Failed to process transaction: ", err);
+      return false;
+    }
+  };
 
   useEffect(() => {
     let storage = localStorage.getItem("rewardsList");
@@ -84,10 +89,24 @@ catch(err){
     }
     setPropsObj(JSON.parse(storage));
   }, []);
-  const handleSubmit = (e) => {
+
+  const handlePayment = (e) => {
     e.preventDefault();
-    console.log({ name, discordID, githubURL, twitterHandle, walletAddress });
-    // router.push("/");
+    if (addressArray.length < 1) return;
+
+    console.log(
+      addressArray.map((_addr) => {
+        propsObj.forEach((element) => {
+          if (element.wallet_Address === _addr) {
+            const status = processPaymentTransaction(_addr, amount)
+            return {...element, status, note:status?"Transaction Went Through":"Transaction Failed"}
+          };
+          return {wallet_Address: _addr, name: "Unknown user", status:false, note:"This user is not Part of Reward List"}
+        });
+      })
+    );
+
+    // console.log({ name, discordID, githubURL, twitterHandle, walletAddress });
   };
 
   return (
@@ -103,8 +122,14 @@ catch(err){
         <div className="flex justify-evenly text-3xl mb-4 uppercase w-full text-center">
           Pay Active Participants
         </div>
+        <div>
+          RWXX2OACYFWOH7JKS5W6HLFDXUC6GLI6MYUJTAQ5B4VH6ZFS5LQSS6MJ2I,ILSYSYHSCMQ4KSVGQEDODDA4N6ZF4CRPQASYWJBV2T5RF2FZQQKTFB5GW4
+        </div>
         <form className="flex items-center justify-center flex-col space-y-10">
-          <textarea onChange={(e)=>setAddressArray(e.target.value)}
+          <textarea
+            onChange={(e) =>
+              setAddressArray([...e.target.value.split(/[ ,]+/)])
+            }
             className=""
             placeholder="Copy and paste a list of addresses here"
           ></textarea>
@@ -112,7 +137,7 @@ catch(err){
           <span className="space-y-3 flex">
             <p>Choice Amount :</p>{" "}
             <input
-            onChange={(e)=>setAmount(e.target.value)}
+              onChange={(e) => setAmount(Number(e.target.value))}
               type="number"
               className="outline-none border-2 border-gray-700 px-2"
             />
@@ -120,10 +145,17 @@ catch(err){
           <input
             type="submit"
             value="Pay"
+            onClick={handlePayment}
             className="border-2 border-gray-500 hover:border-gray-900 hover:shadow-lg cursor-pointer p-2"
           />
         </form>
       </section>
+      <section>{tablecontent && tablecontent.map(({name, wallet_Address, status, note}) => <>
+      <span>Name : {name}</span>
+      <span>wallet Address : {wallet_Address}</span>
+      <span>Status : {status}</span>
+      <span>note : {note}</span>
+      </>)}</section>
     </>
   );
 }
