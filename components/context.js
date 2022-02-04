@@ -5,9 +5,12 @@ export const AppProvider = ({ children }) => {
   const [propsObj, setPropsObj] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [isConnected, setConnected] = useState(false);
-  const [markdown, setMarkdown] = useState(null);
-  const [title, setTitle] = useState(null)
-  const [address, setAddress] = useState(null);
+  const [walletAddress, setWalletAddress] = useState(null);
+  const [name,setName] = useState("")
+  const [discordID, setDiscordID] = useState("")
+  const [githubURL, setGithubURL] = useState("")
+  const [twitterHandle, setTwitterHandle] = useState("")
+
 
   return (
     <AppContext.Provider
@@ -18,12 +21,16 @@ export const AppProvider = ({ children }) => {
         setModalOpen,
         isConnected,
         setConnected,
-        markdown,
-        setMarkdown,
-        title,
-        setTitle,
-        address,
-        setAddress,
+        walletAddress,
+        setWalletAddress,
+        name,
+        setName,
+        discordID,
+        setDiscordID,
+        githubURL,
+        setGithubURL,
+        twitterHandle,
+        setTwitterHandle,
       }}
     >
       {children}
