@@ -8,6 +8,7 @@ import defaultRewardArray from "../../components/defaultRewardArray";
 export default function Proposals() {
   const router = useRouter();
   const {
+    handlePopUp,
     setPropsObj,
     propsObj,
     walletAddress,
@@ -38,7 +39,23 @@ export default function Proposals() {
   },[propsObj])
 
   const updateStorage = (_value) =>{
-    setPropsObj([_value,...propsObj])
+    const alikeArray = propsObj.filter((item)=>{
+      const {name, wallet_Address} = _value
+      return name == item.name || wallet_Address == item.wallet_Address
+    })
+    console.log("Alike array:",alikeArray)
+if(alikeArray.length===0) {   
+  setPropsObj([_value,...propsObj])
+    setTimeout(()=>handlePopUp(
+      true, "Successfully Updated Reward List", false
+    ),500)
+}
+else{
+    setTimeout(
+      () => handlePopUp(true, "Unable to add Participant to Database", true),
+      500
+    );
+}
   }
 
   const handleSubmit = (e) => {

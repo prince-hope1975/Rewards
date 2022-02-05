@@ -5,6 +5,7 @@ const defaultRewardArray = [
     github: "https://giithub.com/JohnDoe",
     twitter: "@JohnDoe",
     wallet_Address: "dkjf3j9w0j3o02-wrj9309kdjskjfoejj323w0j",
+    status: true
   },
   {
     name: "john Doe",
@@ -12,6 +13,7 @@ const defaultRewardArray = [
     github: "https://giithub.com/JohnDoe",
     twitter: "@JohnDoe",
     wallet_Address: "dkjf3j9w0j3o02-wrj9309kdjskjfoejj323w0j",
+    status: false
   },
   {
     name: "Prince Hope",

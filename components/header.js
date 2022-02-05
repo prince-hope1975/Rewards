@@ -1,11 +1,12 @@
 import { useGlobalContext } from "./context";
 import styles from "../styles/header.module.css";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
+import MessageProp from "./message";
 
 import Link from "next/link";
 import Image from "next/image";
 const Header = () => {
-  const { isConnected, setModalOpen, isModalOpen, setConnected } =
+  const { isConnected,message, setModalOpen, isModalOpen, setConnected } =
     useGlobalContext();
 
   return (
@@ -48,7 +49,7 @@ const Header = () => {
           </Link>
         </div>
       </div>
-
+   {message.open === true && <MessageProp/>}
     </header>
   );
 };

@@ -32,21 +32,11 @@ export default function Proposals() {
   const {
     setPropsObj,
     propsObj,
-    walletAddress,
-    setWalletAddress,
-    name,
-    setName,
-    discordID,
-    setDiscordID,
-    githubURL,
-    setGithubURL,
-    twitterHandle,
-    setTwitterHandle,
   } = useGlobalContext();
 
   const [addressArray, setAddressArray] = useState([]);
   const [amount, setAmount] = useState(0);
-  const [tablecontent, setTablecontent] = useState(null);
+  const [tablecontent, setTablecontent] = useState([]);
 
   const processPaymentTransaction = async (
     _address: string,
@@ -73,6 +63,7 @@ export default function Proposals() {
       let sendTx = await algodClient.sendRawTransaction(signedTxn.blob).do();
 
       console.log("Transaction : " + sendTx.txId);
+      console.log("Address : " + _address);
       return true;
     } catch (err) {
       console.log("Failed to process transaction: ", err);
@@ -91,21 +82,21 @@ export default function Proposals() {
 
   const handlePayment = (e) => {
     e.preventDefault();
+    console.log("AddressArray",addressArray)
     if (addressArray.length < 1) return;
 
-    console.log(
       addressArray.map((_addr) => {
-        propsObj.forEach((element) => {
+        propsObj.forEach(async (element) => {
           if (element.wallet_Address === _addr) {
-            const status = processPaymentTransaction(_addr, amount)
-            return {...element, status, note:status?"Transaction Went Through":"Transaction Failed"}
+            console.log(`${_addr} == ${element.wallet_Address}`)
+            const status = await processPaymentTransaction(_addr, amount)
+           setTablecontent([ {...element, status, note:status?"Transaction Went Through":"Transaction Failed"}, ...tablecontent])
+            return
           };
-          return {wallet_Address: _addr, name: "Unknown user", status:false, note:"This user is not Part of Reward List"}
+        setTablecontent([  {wallet_Address: _addr, name: "Unknown user", status:false, note:"This user is not Part of Reward List"}, ...tablecontent])
+          return
         });
       })
-    );
-
-    // console.log({ name, discordID, githubURL, twitterHandle, walletAddress });
   };
 
   return (
@@ -117,13 +108,13 @@ export default function Proposals() {
       </Head>
       <Header />
 
-      <section className={`pt-4  text-gray-900 flex items-center flex-col`}>
+      <section className={`pt-4  text-gray-900 flex items-center flex-col `}>
         <div className="flex justify-evenly text-3xl mb-4 uppercase w-full text-center">
           Pay Active Participants
         </div>
-        <div>
-          RWXX2OACYFWOH7JKS5W6HLFDXUC6GLI6MYUJTAQ5B4VH6ZFS5LQSS6MJ2I,ILSYSYHSCMQ4KSVGQEDODDA4N6ZF4CRPQASYWJBV2T5RF2FZQQKTFB5GW4
-        </div>
+        <p className="p-4 ">
+          RWXX2OACYFWOH7JKS5W6HLFDXUC6GLI6MYUJTAQ5B4VH6ZFS5LQSS6MJ2I,ILSYSYHSCMQ4KSVGQEDODDA4N6ZF4CRPQASYWJBV2T5RF2FZQQKTFB5GW4,IAWNDP5OXXP7BD7I7QUMUOF35SM3IZWUW755HHDJK2VK25D7TLJY2UZGUE
+        </p>
         <form className="flex items-center justify-center flex-col space-y-10">
           <textarea
             onChange={(e) =>
@@ -149,12 +140,54 @@ export default function Proposals() {
           />
         </form>
       </section>
-      <section>{tablecontent && tablecontent.map(({name, wallet_Address, status, note}) => <>
-      <span>Name : {name}</span>
-      <span>wallet Address : {wallet_Address}</span>
-      <span>Status : {status}</span>
-      <span>note : {note}</span>
-      </>)}</section>
+      <section className="text-gray-900">
+        <h1 className="text-center uppercase mt-10 border-2 border-gray-700 py-4">
+          Disbursment Status
+        </h1>
+        <div className={`w-full flex  justify-evenly capitalize  `}>
+          <span className="py-3 w-full text-center border-2 border-gray-700 bg-purple-200">
+            Name{" "}
+          </span>
+          <span className="py-3 w-full text-center border-2 border-gray-700  bg-purple-200">
+            wallet Address
+          </span>
+          <span className="py-3 w-full text-center border-2 border-gray-700 bg-purple-200 ">
+            Status{" "}
+          </span>
+        </div>
+        {tablecontent &&
+          tablecontent.map(({ name, wallet_Address, status }) => {
+            return (
+              <div
+                className={`w-full  flex items-center justify-evenly text-gray-900`}
+              >
+                <span className="border-2 border-gray-700 w-full text-center">
+                  {" "}
+                  {name}
+                </span>
+                <span className="border-2 border-gray-700 w-full text-center">
+                  {wallet_Address.substring(0, 5)}...
+                  {wallet_Address.substring(
+                    wallet_Address.length - 7,
+                    wallet_Address.length - 1
+                  )}
+                </span>
+                <span
+                  className={`border-2 border-gray-700 w-full text-center ${
+                    status === true ? "bg-green-500" : "bg-red-500"
+                  }`}
+                >
+                  {" "}
+                  {status
+                    ? "Success"
+                    : status === false
+                    ? "Failure"
+                    : `${status}`}
+                </span>
+              </div>
+            );
+          })}
+      </section>
     </>
   );
 }
