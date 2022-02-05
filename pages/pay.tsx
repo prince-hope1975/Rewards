@@ -29,14 +29,12 @@ export default function Proposals() {
 
   // import the variables fromt he global context file
   // Located at /components/context.js
-  const {
-    setPropsObj,
-    propsObj,
-  } = useGlobalContext();
+  const { setPropsObj, propsObj } = useGlobalContext();
 
   const [addressArray, setAddressArray] = useState([]);
   const [amount, setAmount] = useState(0);
   const [tablecontent, setTablecontent] = useState([]);
+  const [arr, setArr] = useState([])
 
   const processPaymentTransaction = async (
     _address: string,
@@ -79,24 +77,42 @@ export default function Proposals() {
     }
     setPropsObj(JSON.parse(storage));
   }, []);
+  useEffect(() => {
+    console.log("tble content: ", tablecontent);
+    setArr([...tablecontent,...arr])
+  }, [tablecontent]);
 
   const handlePayment = (e) => {
     e.preventDefault();
-    console.log("AddressArray",addressArray)
+    console.log("AddressArray", addressArray);
     if (addressArray.length < 1) return;
+    let placeHolderArray = [];
+    let finalArr = addressArray.map((_addr) => {
+      return { name: "Unknown", wallet_Address: _addr, status: false };
+    });
 
-      addressArray.map((_addr) => {
-        propsObj.forEach(async (element) => {
-          if (element.wallet_Address === _addr) {
-            console.log(`${_addr} == ${element.wallet_Address}`)
-            const status = await processPaymentTransaction(_addr, amount)
-           setTablecontent([ {...element, status, note:status?"Transaction Went Through":"Transaction Failed"}, ...tablecontent])
-            return
-          };
-        setTablecontent([  {wallet_Address: _addr, name: "Unknown user", status:false, note:"This user is not Part of Reward List"}, ...tablecontent])
-          return
-        });
-      })
+    finalArr.forEach(({ wallet_Address }, index) => {
+      propsObj.forEach((item) => {
+        if (wallet_Address === item.wallet_Address) {
+          finalArr[index] = { ...item, status: true };
+        }
+      });
+    });
+
+    finalArr.forEach(async ({ wallet_Address, status }, index) => {
+      console.log("index: ", index);
+      if (!status) {
+        placeHolderArray.unshift({ ...finalArr[index] });
+        setTablecontent([{ ...finalArr[index] }, ...tablecontent]);
+      } else {
+        const state = await processPaymentTransaction(wallet_Address, amount);
+        finalArr[index] = { ...finalArr[index], status: state };
+        placeHolderArray.unshift({ ...finalArr[index] });
+        console.log(placeHolderArray);
+        
+        setTablecontent([{ ...finalArr[index] }, ...tablecontent]);
+      }
+    });
   };
 
   return (
@@ -155,8 +171,8 @@ export default function Proposals() {
             Status{" "}
           </span>
         </div>
-        {tablecontent &&
-          tablecontent.map(({ name, wallet_Address, status }) => {
+        {arr &&
+          arr.map(({ name, wallet_Address, status }) => {
             return (
               <div
                 className={`w-full  flex items-center justify-evenly text-gray-900`}
