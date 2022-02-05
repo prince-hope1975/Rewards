@@ -41,7 +41,7 @@ export default function Proposals() {
   const updateStorage = (_value) =>{
     const alikeArray = propsObj.filter((item)=>{
       const {name, wallet_Address} = _value
-      return name == item.name || wallet_Address == item.wallet_Address
+      return name == item.name && wallet_Address == item.wallet_Address
     })
     console.log("Alike array:",alikeArray)
 if(alikeArray.length===0) {   

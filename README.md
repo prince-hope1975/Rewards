@@ -41,31 +41,26 @@ yarn dev
 ```
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-
 ## Functionalities
-- [x] User have to send $choice before generating NFT.
-- [x] User can create their own NFT in app.
-- [x] User has option to upload image file before generating or creating NFT.
-- [x] User have to input image title to set metadata.
-- [x] User have to connect either algosigner or my algowallet before generating NFT.
+- [x] Admin can add active participants.
+- [x] Admin can reward single address.
+- [x] Admin can reward bulk address
+- [x] Error Hansling to prevent multiple address submissions.
+- [x] Address Validation
 
 
 
 ## Technology used
-- Thirdweb
-- Ethers js
 - Next.js
-- TailwindCSS
-- NodeJs
-- Algorand 
-- Pinata Api
+- Tailwind.css
+- Algosdk
 
-## Lion NFT 
-<img src="./Lion.png">
+## Preview video 
+<a href="https://youtu.be/_XDG8E2U4Bc">Here</a>
 
-preview the site <a href="">here# Nft
+## Preview the site <a href="">Here</a>
 
-# Nft
+ ## About
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Deploy on Vercel

@@ -1,5 +1,5 @@
 import { useGlobalContext } from "./context";
-const messageProp = () => {
+const MessageProp = () => {
   const { message } = useGlobalContext();
   return (
     <div
@@ -12,4 +12,4 @@ const messageProp = () => {
     </div>
   );
 };
-export default messageProp;
+export default MessageProp;

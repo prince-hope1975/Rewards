@@ -61,7 +61,6 @@ export default function Proposals() {
       let sendTx = await algodClient.sendRawTransaction(signedTxn.blob).do();
 
       console.log("Transaction : " + sendTx.txId);
-      console.log("Address : " + _address);
       return true;
     } catch (err) {
       console.log("Failed to process transaction: ", err);
@@ -78,13 +77,11 @@ export default function Proposals() {
     setPropsObj(JSON.parse(storage));
   }, []);
   useEffect(() => {
-    console.log("tble content: ", tablecontent);
     setArr([...tablecontent,...arr])
   }, [tablecontent]);
 
   const handlePayment = (e) => {
     e.preventDefault();
-    console.log("AddressArray", addressArray);
     if (addressArray.length < 1) return;
     let placeHolderArray = [];
     let finalArr = addressArray.map((_addr) => {
@@ -100,7 +97,6 @@ export default function Proposals() {
     });
 
     finalArr.forEach(async ({ wallet_Address, status }, index) => {
-      console.log("index: ", index);
       if (!status) {
         placeHolderArray.unshift({ ...finalArr[index] });
         setTablecontent([{ ...finalArr[index] }, ...tablecontent]);
@@ -108,7 +104,6 @@ export default function Proposals() {
         const state = await processPaymentTransaction(wallet_Address, amount);
         finalArr[index] = { ...finalArr[index], status: state };
         placeHolderArray.unshift({ ...finalArr[index] });
-        console.log(placeHolderArray);
         
         setTablecontent([{ ...finalArr[index] }, ...tablecontent]);
       }
@@ -128,7 +123,7 @@ export default function Proposals() {
         <div className="flex justify-evenly text-3xl mb-4 uppercase w-full text-center">
           Pay Active Participants
         </div>
-        <p className="p-4 ">
+        <p className="p-4 overflow-auto w-full">
           RWXX2OACYFWOH7JKS5W6HLFDXUC6GLI6MYUJTAQ5B4VH6ZFS5LQSS6MJ2I,ILSYSYHSCMQ4KSVGQEDODDA4N6ZF4CRPQASYWJBV2T5RF2FZQQKTFB5GW4,IAWNDP5OXXP7BD7I7QUMUOF35SM3IZWUW755HHDJK2VK25D7TLJY2UZGUE
         </p>
         <form className="flex items-center justify-center flex-col space-y-10">
@@ -172,16 +167,23 @@ export default function Proposals() {
           </span>
         </div>
         {arr &&
-          arr.map(({ name, wallet_Address, status }) => {
+          arr.map(({ name, wallet_Address, status },index) => {
             return (
               <div
+                key={index}
                 className={`w-full  flex items-center justify-evenly text-gray-900`}
               >
-                <span className="border-2 border-gray-700 w-full text-center">
+                <span
+                  key={`${index}1`}
+                  className="border-2 border-gray-700 w-full text-center"
+                >
                   {" "}
                   {name}
                 </span>
-                <span className="border-2 border-gray-700 w-full text-center">
+                <span
+                  key={`${index}2`}
+                  className="border-2 border-gray-700 w-full text-center"
+                >
                   {wallet_Address.substring(0, 5)}...
                   {wallet_Address.substring(
                     wallet_Address.length - 7,
@@ -189,6 +191,7 @@ export default function Proposals() {
                   )}
                 </span>
                 <span
+                  key={`${index}3`}
                   className={`border-2 border-gray-700 w-full text-center ${
                     status === true ? "bg-green-500" : "bg-red-500"
                   }`}

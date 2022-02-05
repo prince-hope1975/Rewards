@@ -44,7 +44,7 @@ export default function Home() {
       <Header />
       <main className={` ${styles.main} space-y-6`}>
         <h1 className={`mt-8 text-4xl text-center`}>
-          Welcome to <Link href="/new/proposals">Choice Rewards </Link>
+          Welcome to Choice Rewards 
         </h1>
         <h2
           className={`text-lg text-center font-mono mt-2 max-w-md ${styles.descriptio}`}
