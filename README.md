@@ -1,11 +1,16 @@
 # Prince's - Reward Implementatiion Software for (OSS)
 
-## PROJECT DESCRIPTION
-The project rund on Etherum Rinkeby testnet and enables the user to either draw an NFT in the app or upload an NFt
 
+
+## PROJECT DESCRIPTION
+The project provides an easy to use way to create and store varibles that persisits and also makes use of the Algosdk which allows the processsing of transactions on the algorand network
 ## PREREQUISITES
-- Have a metamask account
-- Make sure your wallet is funded with eth
+- PureStake Api key
+- Algorand Wallet address
+- WEB BROWSER (fOR TESTING)
+- NODE JS
+- GIT
+- AN UNDERSTANDING OF LOCALSTORAGE API
 
 ## RUN ON YOUR LOCAL MACHINE 
 - `git clone` the repository
@@ -45,7 +50,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - [x] Admin can add active participants.
 - [x] Admin can reward single address.
 - [x] Admin can reward bulk address
-- [x] Error Hansling to prevent multiple address submissions.
+- [x] Error Handling to prevent multiple address submissions.
 - [x] Address Validation
 
 
@@ -58,7 +63,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## Preview video 
 <a href="https://youtu.be/_XDG8E2U4Bc">Here</a>
 
-## Preview the site <a href="">Here</a>
+[![Watch the video](./public/Choice.png)](https://youtu.be/_XDG8E2U4Bc)
+## Preview the site
+ <a href="">Here</a>
 
  ## About
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
