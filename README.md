@@ -65,7 +65,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 [![Watch the video](./public/Choice.png)](https://youtu.be/_XDG8E2U4Bc)
 ## Preview the site
- <a href="">Here</a>
+ <a href="https://vercel.com/prince-hope1975/rewards/9c7m5co8YPsWtVSLDSYdX9xmggX3">Here</a>
 
  ## About
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
